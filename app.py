@@ -9,6 +9,4 @@ debug = DebugToolbarExtension(app)
 def home():
     """Generate and show form to ask words."""
 
-    prompts = story.prompts
-
-    return render_template("questions.html", prompts=prompts)
+    return render_template("home.html")
