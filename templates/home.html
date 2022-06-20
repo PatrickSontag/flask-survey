@@ -1,11 +1,8 @@
-<!doctype html>
-<html>
-<head>
-  <title>Survey</title>
-</head>
-<body>
-  <form action="/begin" method="POST">Satisfaction Survey
-    <button>Start</button>
-  </form>
-</body>
-</html>
+{% extends 'base.html' %}
+{% block content %}
+<form action="/begin" method="POST">
+  <h1>{{ current_survey.title }}</h1>
+  <p>{{ current_survey.instructions }}</p>
+  <button>Start</button>
+</form>
+{% endblock %}

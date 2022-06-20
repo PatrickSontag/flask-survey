@@ -9,19 +9,19 @@ debug = DebugToolbarExtension(app)
 
 current_survey = satisfaction_survey
 
-user_responses = []
+responses = []
 
 @app.route("/")
 def home():
     """Generate and show form to ask words."""
 
-    return render_template("home.html")
+    return render_template("home.html", current_survey=current_survey)
 
 @app.route("/begin", methods=["POST"])
 def begin():
     """Redirect to first question"""
 
-    user_responses = []
+    responses = []
 
     return redirect ("question/0")
 
@@ -36,9 +36,9 @@ def show_question(qid):
 def answer():
     """Collect answer and direct to next question"""
     ans = request.form['answer']
-    user_responses.append(ans)
+    responses.append(ans)
 
-    if (len(user_responses) == len(current_survey.questions)):
-        return render_template("complete.html")
+    if (len(responses) == len(current_survey.questions)):
+        return render_template("complete.html", responses=responses)
     else:
-        return redirect (f"question/{len(user_responses)}")
+        return redirect (f"question/{len(responses)}")
