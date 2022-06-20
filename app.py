@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, session, flash
 from flask_debugtoolbar import DebugToolbarExtension
 from surveys import satisfaction_survey
 
@@ -9,7 +9,7 @@ debug = DebugToolbarExtension(app)
 
 current_survey = satisfaction_survey
 
-responses = []
+RESPONSES_KEY = "responses"
 
 @app.route("/")
 def home():
@@ -21,13 +21,25 @@ def home():
 def begin():
     """Redirect to first question"""
 
-    responses = []
+    session[RESPONSES_KEY] = []
 
     return redirect ("question/0")
 
 @app.route("/question/<int:qid>")
 def show_question(qid):
     """Display current question"""
+    responses = session.get(RESPONSES_KEY)
+
+    if (responses == None):
+        return redirect("/")
+
+    if (len(responses) == len(survey.questions)):
+        return redirect("/complete")
+
+    if(len(responses) != qid):
+        flash(f"Invalid question id: {qid}.")
+        return redirect(f"/questions/{len(response)}")
+
     question = current_survey.questions[qid]
 
     return render_template("question.html", question_num=qid, question=question)
@@ -35,8 +47,11 @@ def show_question(qid):
 @app.route("/answer", methods=["POST"])
 def answer():
     """Collect answer and direct to next question"""
-    ans = request.form['answer']
-    responses.append(ans)
+    choice = request.form['answer']
+
+    responses = session[RESPONSES_KEY]
+    responses.append(choice)
+    session[RESPONSES_KEY] = responses
 
     if (len(responses) == len(current_survey.questions)):
         return render_template("complete.html", responses=responses)
