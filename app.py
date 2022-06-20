@@ -33,12 +33,12 @@ def show_question(qid):
     if (responses == None):
         return redirect("/")
 
-    if (len(responses) == len(survey.questions)):
+    if (len(responses) == len(current_survey.questions)):
         return redirect("/complete")
 
     if(len(responses) != qid):
         flash(f"Invalid question id: {qid}.")
-        return redirect(f"/questions/{len(response)}")
+        return redirect(f"/questions/{len(responses)}")
 
     question = current_survey.questions[qid]
 
