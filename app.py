@@ -20,7 +20,10 @@ def home():
 @app.route("/begin", methods=["POST"])
 def begin():
     """Redirect to first question"""
-    return redirect ("question.html", question_num=0)
+
+    user_responses = []
+
+    return redirect ("question/0")
 
 @app.route("/question/<int:qid>")
 def show_question(qid):
@@ -28,3 +31,14 @@ def show_question(qid):
     question = current_survey.questions[qid]
 
     return render_template("question.html", question_num=qid, question=question)
+
+@app.route("/answer", methods=["POST"])
+def answer():
+    """Collect answer and direct to next question"""
+    ans = request.form['answer']
+    user_responses.append(ans)
+
+    if (len(user_responses) == len(current_survey.questions)):
+        return render_template("complete.html")
+    else:
+        return redirect (f"question/{len(user_responses)}")
